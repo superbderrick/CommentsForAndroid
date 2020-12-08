@@ -1,32 +1,38 @@
-name: Build & Publish Debug APK
-
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
 
-jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Install JDK 1.8
-      uses: actions/setup-java@v1.3.0
-      with:
-          java-version: 1.8
-    - name: Build release APK
-      run: bash ./gradlew :app:assembleRelease
-    - name: Upload apk
-      uses: actions/upload-artifact@v1.0.0
-      with:
-          name: apk
-          path: app/build/outputs/apk/release/app-release-unsigned.apk
-    - name: Upload mapping.txt
-      uses: actions/upload-artifact@v1.0.0
-      with:
-          name: mapping
-          path: app/build/outputs/mapping/release/mapping.txt
-      
 
+jobs:
+  test:
+    name: Run Unit Tests
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Unit tests
+        run: bash ./gradlew test --stacktrace
+
+  apk:
+    name: Generate APK
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build debug APK
+        run: bash ./gradlew assembleDebug --stacktrace
+      - name: Upload APK
+        uses: actions/upload-artifact@v1
+        with:
+          name: app
+          path: app/build/outputs/apk/debug/app-debug.apk
