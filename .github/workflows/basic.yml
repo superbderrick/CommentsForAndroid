@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [ main ]
 
-
+# for Unit TEST
 jobs:
   test:
     name: Run Unit Tests
@@ -19,6 +19,7 @@ jobs:
       - name: Unit tests
         run: bash ./gradlew test --stacktrace
 
+# for Build
   apk:
     name: Generate APK
     runs-on: ubuntu-18.04
